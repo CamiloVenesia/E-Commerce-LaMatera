@@ -1,193 +1,910 @@
-.product-detail-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 1rem;
-  }
-  
-  .error-message {
-    text-align: center;
-    padding: 2rem;
-    font-size: 1.25rem;
-    color: #64748b;
-  }
-  
-  .product-detail-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  @media (min-width: 768px) {
-    .product-detail-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  
-  .product-image-wrapper {
-    position: relative;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-    border-radius: 0.5rem;
-    background-color: #f5f5f5;
-  }
-  
-  .product-detail-image {
+/* =========================================================
+   ITEM DETAIL — LA MATERA
+   ========================================================= */
+
+.lm-detail {
     width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  
-  .product-info {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    color: #181818;
+}
+
+/* =========================================================
+   BREADCRUMB
+   ========================================================= */
+
+.lm-detail-breadcrumb {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 42px;
+
+    color: #8c8a84;
+    font-size: 0.78rem;
+    line-height: 1.4;
+}
+
+.lm-detail-breadcrumb a {
+    color: #77746e;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.lm-detail-breadcrumb a:hover {
+    color: #aa8d4f;
+}
+
+.lm-detail-breadcrumb span:last-child {
+    color: #272727;
+}
+
+/* =========================================================
+   MAIN GRID
+   ========================================================= */
+
+.lm-detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(430px, 0.95fr);
+    align-items: start;
+    column-gap: 72px;
+}
+
+/* =========================================================
+   GALERÍA
+   ========================================================= */
+
+.lm-detail-gallery {
+    min-width: 0;
+
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 18px;
+
+    align-items: start;
+}
+
+/* =========================================================
+   THUMBNAILS
+   ========================================================= */
+
+.lm-detail-thumbnails {
+    width: 92px;
+
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
-  
-  .product-title {
-    font-size: 1.875rem;
-    font-weight: 700;
-    color: #333;
-  }
-  
-  .product-price {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #928962;
-  }
-  
-  .product-separator {
-    margin: 0.5rem 0;
-    border: none;
-    border-top: 1px solid #e2e8f0;
-  }
-  
-  .product-description {
-    color: #666;
-    line-height: 1.5;
-    font-size: 1rem;
-  }
-  
-  .quantity-selector {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 1rem 0;
-  }
-  
-  .quantity-button {
+    gap: 14px;
+
+    position: sticky;
+    top: 115px;
+}
+
+.lm-detail-thumb {
+    width: 92px;
+    height: 92px;
+
+    padding: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-  
-  .quantity-button:hover {
-    background-color: #eee;
-  }
-  
-  .quantity-icon {
-    color: #333;
-  }
-  
-  .quantity-value {
-    width: 2rem;
-    text-align: center;
-    font-size: 1.1rem;
-  }
-  
-  .add-to-cart-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 1.5rem;
-    background-color: #928962;
-    color: white;
-    border: none;
-    border-radius: 0.375rem;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin: 1rem 0;
-  }
-  
-  .add-to-cart-btn:hover {
-    background-color: #ab956d;
-  }
-  
-  .add-to-cart-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
-  .cart-btn-icon {
-    margin-right: 0.5rem;
-  }
-  
-  .back-to-home-link {
-    display: inline-block;
-    text-align: center;
-    margin-top: 0.5rem;
-    color: #666;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.3s;
-  }
-  
-  .back-to-home-link:hover {
-    color: #928962;
-  }
-  
-  .product-details-section {
-    margin-top: 2rem;
-  }
-  
-  .details-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #333;
-  }
-  
-  .details-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
+
+    border: 1px solid #ded9cf;
+    border-radius: 0;
+
+    background: #fff;
+
     overflow: hidden;
-    background-color: #f9f9f9;
-  }
-  
-  .details-content {
-    padding: 1.5rem;
-  }
-  
-  .details-grid {
-    display: grid;
-    gap: 1rem;
-  }
-  
-  .detail-item {
-    margin-bottom: 0.5rem;
-  }
-  
-  .detail-label {
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.lm-detail-thumb:hover {
+    border-color: #aa8d4f;
+    transform: translateY(-1px);
+}
+
+.lm-detail-thumb.is-active {
+    border-color: #aa8d4f;
+    border-width: 1.5px;
+}
+
+.lm-detail-thumb img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+.lm-detail-thumb span {
+    padding: 8px;
+
+    color: #8c8a84;
+    font-size: 0.65rem;
+    text-align: center;
+}
+
+/* =========================================================
+   IMAGEN PRINCIPAL
+   ========================================================= */
+
+.lm-detail-photo {
+    position: relative;
+
+    width: 100%;
+    height: 700px;
+
+    overflow: hidden;
+
+    background: #f4f1eb;
+}
+
+.lm-detail-main-image {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    background: #fff;
+}
+
+.lm-detail-fallback {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    gap: 10px;
+
+    background: #f4f1eb;
+
+    color: #242424;
+
+    font-family: var(--font-display);
+    font-size: 2rem;
+}
+
+.lm-detail-fallback span {
+    color: #8c8a84;
+
+    font-family: inherit;
+    font-size: 0.8rem;
+}
+
+/* =========================================================
+   OFERTA
+   ========================================================= */
+
+.lm-detail-offer {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px 13px;
+
+    border-radius: 5px;
+
+    background: #2fc56b;
+    color: #fff;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.lm-detail-image-count {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+
+    padding: 6px 10px;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    color: #55514a;
+
+    font-size: 0.7rem;
+}
+
+/* =========================================================
+   INFORMACIÓN
+   ========================================================= */
+
+.lm-detail-info {
+    min-width: 0;
+
+    padding-top: 22px;
+}
+
+.lm-detail-category {
+    margin: 0 0 20px;
+
+    color: #aa8d4f;
+
+    font-size: 0.76rem;
     font-weight: 600;
-    margin-bottom: 0.25rem;
-    color: #444;
-  }
-  
-  .detail-value {
-    color: #666;
-  }
-  
-  .detail-separator {
-    margin: 0.5rem 0;
-    border: none;
-    border-top: 1px solid #e2e8f0;
-  }
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+.lm-detail-info h1 {
+    max-width: 650px;
+
+    margin: 0 0 30px;
+
+    color: #181818;
+
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 4vw, 4.3rem);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -1.5px;
+}
+
+/* =========================================================
+   PRECIOS
+   ========================================================= */
+
+.lm-detail-pricing {
+    padding-bottom: 28px;
+
+    border-bottom: 1px solid #ddd8ce;
+}
+
+.lm-detail-price-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.lm-detail-price-row strong {
+    color: #181818;
+
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.lm-detail-price-row del {
+    color: #98948d;
+
+    font-size: 1.15rem;
+}
+
+.lm-detail-saving {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 5px 9px;
+
+    border-radius: 4px;
+
+    background: #2fc56b;
+    color: #fff;
+
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.lm-detail-installments {
+    margin: 12px 0 0;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #55514a;
+
+    font-size: 0.9rem;
+}
+
+.lm-detail-installments svg {
+    flex-shrink: 0;
+
+    color: #aa8d4f;
+
+    width: 18px;
+    height: 18px;
+}
+
+.lm-detail-installments strong {
+    color: #262626;
+}
+
+/* =========================================================
+   STOCK
+   ========================================================= */
+
+.lm-detail-stock {
+    margin: 28px 0 24px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #348d55;
+
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+.lm-detail-stock > span {
+    width: 8px;
+    height: 8px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #39a85c;
+}
+
+.lm-detail-stock.is-empty {
+    color: #b65345;
+}
+
+.lm-detail-stock.is-empty > span {
+    background: #d84c42;
+}
+
+/* =========================================================
+   DESCRIPCIÓN
+   ========================================================= */
+
+.lm-detail-intro {
+    max-width: 650px;
+
+    margin: 0 0 30px;
+
+    color: #5f5b55;
+
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* =========================================================
+   COMPRA
+   ========================================================= */
+
+.lm-detail-purchase {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 135px minmax(0, 1fr);
+    gap: 12px;
+
+    margin-bottom: 12px;
+}
+
+/* =========================================================
+   CANTIDAD
+   ========================================================= */
+
+.lm-detail-quantity {
+    height: 56px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    border: 1px solid #d8d2c7;
+    background: #fff;
+}
+
+.lm-detail-quantity button {
+    border: 0;
+
+    background: transparent;
+
+    color: #393632;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.lm-detail-quantity button:hover:not(:disabled) {
+    background: #f3f0e9;
+}
+
+.lm-detail-quantity button:disabled {
+    color: #c5c0b8;
+    cursor: not-allowed;
+}
+
+.lm-detail-quantity output {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #222;
+
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* =========================================================
+   BOTÓN CARRITO
+   ========================================================= */
+
+.lm-detail-add {
+    height: 56px;
+
+    border: 1px solid #1d1d1b;
+    border-radius: 0;
+
+    background: #1d1d1b;
+    color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+
+    padding: 0 25px;
+
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.2s ease;
+}
+
+.lm-detail-add:hover:not(:disabled) {
+    background: #aa8d4f;
+    border-color: #aa8d4f;
+}
+
+.lm-detail-add:active:not(:disabled) {
+    transform: scale(0.99);
+}
+
+.lm-detail-add:disabled {
+    background: #ddd9d1;
+    border-color: #ddd9d1;
+    color: #aaa59c;
+
+    cursor: not-allowed;
+}
+
+.lm-detail-add svg {
+    width: 18px;
+    height: 18px;
+
+    flex-shrink: 0;
+}
+
+/* =========================================================
+   AVISO CARRITO
+   ========================================================= */
+
+.lm-detail-cart-note {
+    margin: 10px 0 0;
+
+    color: #9b958b;
+
+    font-size: 0.76rem;
+}
+
+.lm-detail-added {
+    margin: 12px 0 0;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+
+    color: #3d8958;
+
+    font-size: 0.8rem;
+}
+
+.lm-detail-added svg {
+    width: 16px;
+    height: 16px;
+}
+
+.lm-detail-added a {
+    color: #aa8d4f;
+    font-weight: 600;
+}
+
+/* =========================================================
+   ACORDEONES
+   ========================================================= */
+
+.lm-detail-accordions {
+    margin-top: 42px;
+
+    border-top: 1px solid #ddd8ce;
+}
+
+.lm-detail-accordions details {
+    border-bottom: 1px solid #ddd8ce;
+}
+
+.lm-detail-accordions summary {
+    min-height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 0 2px;
+
+    color: #252525;
+
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+
+    list-style: none;
+
+    cursor: pointer;
+}
+
+.lm-detail-accordions summary::-webkit-details-marker {
+    display: none;
+}
+
+.lm-detail-accordions summary svg {
+    width: 17px;
+    height: 17px;
+
+    color: #aa8d4f;
+
+    transition: transform 0.25s ease;
+}
+
+.lm-detail-accordions details[open] summary svg {
+    transform: rotate(180deg);
+}
+
+.lm-detail-panel {
+    padding: 0 2px 25px;
+
+    color: #65615b;
+
+    font-size: 0.86rem;
+    line-height: 1.7;
+}
+
+.lm-detail-panel p {
+    margin: 0;
+}
+
+.lm-detail-panel dl {
+    margin: 20px 0 0;
+
+    display: grid;
+    gap: 10px;
+}
+
+.lm-detail-panel dl > div {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 20px;
+}
+
+.lm-detail-panel dt {
+    color: #8c877f;
+}
+
+.lm-detail-panel dd {
+    margin: 0;
+
+    color: #34322f;
+}
+
+/* =========================================================
+   VOLVER
+   ========================================================= */
+
+.lm-detail-back {
+    display: inline-block;
+
+    margin-top: 25px;
+
+    color: #8c7650;
+
+    font-size: 0.82rem;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.lm-detail-back:hover {
+    color: #181818;
+}
+
+/* =========================================================
+   ESTADOS
+   ========================================================= */
+
+.lm-detail-state {
+    min-height: 60vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 18px;
+
+    padding: 60px 20px;
+
+    text-align: center;
+}
+
+.lm-detail-state h1 {
+    margin: 0;
+
+    color: #242424;
+
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.lm-detail-state a {
+    color: #aa8d4f;
+
+    text-decoration: none;
+}
+
+/* =========================================================
+   RESPONSIVE — LAPTOP
+   ========================================================= */
+
+@media (max-width: 1400px) {
+    .lm-detail {
+        width: min(1360px, calc(100% - 64px));
+    }
+
+    .lm-detail-grid {
+        column-gap: 55px;
+        grid-template-columns:
+            minmax(0, 1.45fr)
+            minmax(400px, 0.9fr);
+    }
+
+    .lm-detail-photo {
+        height: 650px;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE — TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+    .lm-detail {
+        width: min(900px, calc(100% - 48px));
+        padding-top: 30px;
+    }
+
+    .lm-detail-breadcrumb {
+        margin-bottom: 30px;
+    }
+
+    .lm-detail-grid {
+        grid-template-columns: 1fr;
+        row-gap: 55px;
+    }
+
+    .lm-detail-photo {
+        height: min(700px, 70vw);
+    }
+
+    .lm-detail-info {
+        padding-top: 0;
+    }
+
+    .lm-detail-info h1 {
+        max-width: 800px;
+        font-size: clamp(2.5rem, 6vw, 4rem);
+    }
+
+    .lm-detail-intro {
+        max-width: 800px;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .lm-detail {
+        width: calc(100% - 32px);
+        padding: 24px 0 60px;
+    }
+
+    .lm-detail-breadcrumb {
+        margin-bottom: 22px;
+
+        gap: 7px;
+
+        font-size: 0.68rem;
+    }
+
+    .lm-detail-grid {
+        row-gap: 35px;
+    }
+
+    .lm-detail-gallery {
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .lm-detail-thumbnails {
+        width: 64px;
+
+        gap: 9px;
+
+        position: static;
+    }
+
+    .lm-detail-thumb {
+        width: 64px;
+        height: 64px;
+    }
+
+    .lm-detail-photo {
+        height: 480px;
+    }
+
+    .lm-detail-offer {
+        top: 10px;
+        right: 10px;
+
+        padding: 7px 10px;
+
+        font-size: 0.62rem;
+    }
+
+    .lm-detail-image-count {
+        right: 10px;
+        bottom: 10px;
+    }
+
+    .lm-detail-category {
+        margin-bottom: 13px;
+
+        font-size: 0.68rem;
+    }
+
+    .lm-detail-info h1 {
+        margin-bottom: 22px;
+
+        font-size: clamp(2.3rem, 11vw, 3.4rem);
+        letter-spacing: -1px;
+    }
+
+    .lm-detail-price-row {
+        gap: 10px;
+    }
+
+    .lm-detail-price-row strong {
+        font-size: 1.65rem;
+    }
+
+    .lm-detail-price-row del {
+        font-size: 0.95rem;
+    }
+
+    .lm-detail-installments {
+        align-items: flex-start;
+
+        font-size: 0.78rem;
+    }
+
+    .lm-detail-stock {
+        margin: 22px 0 20px;
+    }
+
+    .lm-detail-intro {
+        margin-bottom: 24px;
+
+        font-size: 0.85rem;
+    }
+
+    .lm-detail-purchase {
+        grid-template-columns: 1fr;
+    }
+
+    .lm-detail-quantity {
+        width: 100%;
+    }
+
+    .lm-detail-add {
+        width: 100%;
+    }
+
+    .lm-detail-accordions {
+        margin-top: 32px;
+    }
+
+    .lm-detail-accordions summary {
+        min-height: 60px;
+
+        font-size: 0.7rem;
+    }
+
+    .lm-detail-panel dl > div {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+}
+
+/* =========================================================
+   MOBILE PEQUEÑO
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .lm-detail {
+        width: calc(100% - 24px);
+    }
+
+    .lm-detail-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .lm-detail-thumbnails {
+        width: 100%;
+
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(58px, 1fr)
+        );
+
+        order: 2;
+    }
+
+    .lm-detail-thumb {
+        width: 100%;
+        height: 64px;
+    }
+
+    .lm-detail-photo {
+        order: 1;
+
+        height: 390px;
+    }
+
+    .lm-detail-info h1 {
+        font-size: 2.35rem;
+    }
+}

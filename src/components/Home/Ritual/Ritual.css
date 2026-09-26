@@ -1,0 +1,129 @@
+.ritual {
+    padding: 120px 8%;
+    background: #f4f0e8;
+    text-align: center;
+}
+
+.ritual-header {
+    max-width: 700px;
+    margin: 0 auto 70px;
+}
+
+.ritual-eyebrow {
+    display: block;
+    margin-bottom: 18px;
+    color: #9a7b45;
+    font-size: 13px;
+    letter-spacing: 3px;
+    font-weight: 600;
+}
+
+.ritual-header h2 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1.1;
+    color: #171717;
+    margin-bottom: 25px;
+}
+
+.ritual-header p {
+    font-size: 18px;
+    color: #666;
+}
+
+.ritual-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 35px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.ritual-step {
+    background: white;
+    padding: 25px;
+    border-radius: 24px;
+    text-align: left;
+    position: relative;
+    transition: .3s ease;
+}
+
+.ritual-step:hover {
+    transform: translateY(-8px);
+}
+
+.ritual-number {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    background: white;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    z-index: 2;
+}
+
+.ritual-image {
+    height: 280px;
+    overflow: hidden;
+    border-radius: 18px;
+}
+
+.ritual-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: .5s;
+}
+
+.ritual-step:hover img {
+    transform: scale(1.05);
+}
+
+.ritual-step h3 {
+    margin-top: 25px;
+    font-family: var(--font-display);
+    font-size: 28px;
+}
+
+.ritual-step p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.ritual-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: #1d1d1d;
+    font-weight: 600;
+}
+
+.ritual-button {
+    display: inline-flex;
+    margin-top: 60px;
+    padding: 18px 40px;
+    background: #171717;
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.ritual-button:hover {
+    transform: translateY(-3px);
+}
+
+@media (max-width: 900px) {
+
+    .ritual {
+        padding: 80px 20px;
+    }
+
+    .ritual-container {
+        grid-template-columns: 1fr;
+    }
+}

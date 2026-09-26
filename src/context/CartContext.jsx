@@ -1,6 +1,7 @@
 // src/context/CartContext.jsx
 import { createContext, useState, useEffect } from "react";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -13,25 +14,45 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Agrega un producto al carrito
+  // Agrega un producto al carrito (sin superar el stock)
   const addItem = (item, quantity) => {
-    const exists = cart.find((prod) => prod.id === item.id);
-    if (exists) {
-      setCart(
-        cart.map((prod) =>
+    const maxQuantity = item.stock ?? Infinity;
+
+    setCart((prev) => {
+      const exists = prev.find((prod) => prod.id === item.id);
+
+      if (exists) {
+        return prev.map((prod) =>
           prod.id === item.id
-            ? { ...prod, quantity: prod.quantity + quantity }
+            ? {
+                ...prod,
+                quantity: Math.min(prod.quantity + quantity, maxQuantity),
+              }
             : prod
-        )
-      );
-    } else {
-      setCart([...cart, { ...item, quantity }]);
-    }
+        );
+      }
+
+      return [...prev, { ...item, quantity: Math.min(quantity, maxQuantity) }];
+    });
+  };
+
+  // Cambia la cantidad de un producto ya agregado
+  const updateQuantity = (id, quantity) => {
+    setCart((prev) =>
+      prev.map((prod) =>
+        prod.id === id
+          ? {
+              ...prod,
+              quantity: Math.max(1, Math.min(quantity, prod.stock ?? Infinity)),
+            }
+          : prod
+      )
+    );
   };
 
   // Remueve un producto del carrito
   const removeItem = (id) => {
-    setCart(cart.filter((prod) => prod.id !== id));
+    setCart((prev) => prev.filter((prod) => prod.id !== id));
   };
 
   // Vacía el carrito
@@ -54,6 +75,7 @@ export const CartProvider = ({ children }) => {
       value={{
         cart,
         addItem,
+        updateQuantity,
         removeItem,
         clearCart,
         getTotalQuantity,

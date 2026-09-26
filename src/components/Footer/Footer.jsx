@@ -1,61 +1,176 @@
-import React from 'react';
-import './Footer.css';
+import { Link } from "react-router-dom";
+import {
+    FiArrowUpRight,
+    FiInstagram,
+    FiMail,
+} from "react-icons/fi";
+
+import "./Footer.css";
 
 
-import { Link } from 'react-router-dom';
+function Footer() {
+    const currentYear = new Date().getFullYear();
 
-const Footer = () => {
-  return (
-    <footer className="footer">
-      <div className="footer-container">
-        <div className="footer-grid">
-          
-          {/* Columna 1 - Logo */}
-          <div className="footer-col">
-            <h2 className="footer-title">La Matera</h2>
-            <p className="footer-description">
-              Ofrecemos productos artesanales de la más alta calidad para los amantes del mate argentino.
-            </p>
-          </div>
 
-          {/* Columna 2 - Productos */}
-          <div className="footer-col">
-            <h3 className="footer-subtitle">Productos</h3>
-            <ul className="footer-links">
-              <li><Link to="/productos/mates">Mates</Link></li>
-              <li><Link to="/productos/termos">Termos</Link></li>
-              <li><Link to="/productos/bombillas">Bombillas</Link></li>
-              <li><Link to="/productos">Ver todos</Link></li>
-            </ul>
-          </div>
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
 
-          {/* Columna 3 - Información */}
-          <div className="footer-col">
-            <h3 className="footer-subtitle">Información</h3>
-            <ul className="footer-links">
-              <li><Link to="/nosotros">Sobre Nosotros</Link></li>
-              <li><Link to="/envios">Envíos</Link></li>
-              <li><Link to="/terminos">Términos</Link></li>
-            </ul>
-          </div>
 
-          {/* Columna 4 - Contacto */}
-          <div className="footer-col">
-            <h3 className="footer-subtitle">Contacto</h3>
-            <div className="footer-contact">
-              <p>Av. Corrientes 1234, Buenos Aires</p>
-              <p>+54 11 5678-9012</p>
-              <p>info@lamatera.com</p>
+    return (
+        <footer className="footer">
+
+            <div className="footer-container">
+
+                <div className="footer-main">
+
+                    <div className="footer-brand">
+
+                        <Link
+                            to="/"
+                            className="footer-logo"
+                            onClick={scrollToTop}
+                        >
+                            La Matera
+                        </Link>
+
+                        <p className="footer-description">
+                            Una selección de productos para disfrutar
+                            el mate como parte de todos los días.
+                        </p>
+
+                        <div className="footer-socials">
+                            <a
+                                href="#"
+                                className="footer-social"
+                                aria-label="Instagram"
+                            >
+                                <FiInstagram />
+                            </a>
+
+                            <a
+                                href="mailto:info@lamatera.com"
+                                className="footer-social"
+                                aria-label="Enviar un email"
+                            >
+                                <FiMail />
+                            </a>
+                        </div>
+
+                    </div>
+
+
+                    <div className="footer-column">
+
+                        <h3 className="footer-heading">
+                            Comprar
+                        </h3>
+
+                        <Link
+                            to="/categoria/mates"
+                            className="footer-link"
+                        >
+                            Mates
+                        </Link>
+
+                        <Link
+                            to="/categoria/termos"
+                            className="footer-link"
+                        >
+                            Termos
+                        </Link>
+
+                        <Link
+                            to="/categoria/accesorios"
+                            className="footer-link"
+                        >
+                            Accesorios
+                        </Link>
+
+                        <Link
+                            to="/"
+                            className="footer-link"
+                            onClick={scrollToTop}
+                        >
+                            Ver productos
+                        </Link>
+
+                    </div>
+
+
+                    <div className="footer-column">
+
+                        <h3 className="footer-heading">
+                            Ayuda
+                        </h3>
+
+                        <a
+                            href="mailto:info@lamatera.com"
+                            className="footer-link"
+                        >
+                            Contacto
+                        </a>
+
+                        <span className="footer-link footer-link-disabled">
+                            Envíos
+                        </span>
+
+                        <span className="footer-link footer-link-disabled">
+                            Preguntas frecuentes
+                        </span>
+
+                    </div>
+
+
+                    <div className="footer-column footer-contact-column">
+
+                        <span className="footer-eyebrow">
+                            ¿Tenés alguna consulta?
+                        </span>
+
+                        <a
+                            href="mailto:info@lamatera.com"
+                            className="footer-email"
+                        >
+                            info@lamatera.com
+                            <FiArrowUpRight />
+                        </a>
+
+                        <p className="footer-contact-text">
+                            Estamos para ayudarte con tu compra.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div className="footer-bottom">
+
+                    <p>
+                        © {currentYear} La Matera.
+                        Todos los derechos reservados.
+                    </p>
+
+                    <button
+                        type="button"
+                        className="footer-top-button"
+                        onClick={scrollToTop}
+                    >
+                        Volver arriba
+                        <FiArrowUpRight />
+                    </button>
+
+                </div>
+
             </div>
-          </div>
-        </div>
 
-        <div className="footer-copyright">
-          © {new Date().getFullYear()} La Matera - Todos los derechos reservados
-        </div>
-      </div>
-    </footer>
-  );
-};
+        </footer>
+    );
+}
+
 
 export default Footer;

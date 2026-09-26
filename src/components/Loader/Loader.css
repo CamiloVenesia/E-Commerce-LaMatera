@@ -1,25 +1,16 @@
 .loader {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
+
     border-radius: 50%;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+
     display: inline-block;
-    position: relative;
-    border: 2px solid #FF3D00;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
+
+    animation: rotation 0.9s linear infinite;
 }
 
-.loader::after {
-    content: '';
-    box-sizing: border-box;
-    position: absolute;
-    left: 4px;
-    top: 4px;
-    border: 2px solid #838383;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-}
 
 @keyframes rotation {
     0% {

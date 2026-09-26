@@ -1,0 +1,65 @@
+/* =========================================================
+   ITEM DETAIL CONTAINER
+   ========================================================= */
+
+.lm-detail-container {
+    width: 100%;
+    min-height: calc(100vh - 90px);
+
+    box-sizing: border-box;
+
+    padding: 42px 80px 90px;
+}
+
+/* =========================================================
+   RESPONSIVE — PANTALLAS GRANDES
+   ========================================================= */
+
+@media (min-width: 1600px) {
+    .lm-detail-container {
+        padding-left: 110px;
+        padding-right: 110px;
+    }
+}
+
+/* =========================================================
+   NOTEBOOK / DESKTOP
+   ========================================================= */
+
+@media (max-width: 1400px) {
+    .lm-detail-container {
+        padding-left: 60px;
+        padding-right: 60px;
+    }
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+    .lm-detail-container {
+        padding: 35px 40px 70px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .lm-detail-container {
+        padding: 25px 22px 55px;
+    }
+}
+
+/* =========================================================
+   MOBILE PEQUEÑO
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .lm-detail-container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
