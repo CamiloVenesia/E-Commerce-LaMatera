@@ -64,9 +64,25 @@ const ItemListContainer = () => {
         return [...filtrados].sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
     }, [productos, categoria, oferta, busqueda, orden, soloOfertas]);
 
+    const heroImage = useMemo(() => {
+
+        const productoHero = productos.find((producto) => (
+            (!categoria || producto.categoria === categoria) &&
+            (!oferta || producto.oferta === true) &&
+            producto.img
+        ));
+
+        return productoHero?.img || productos.find((producto) => producto.img)?.img || null;
+
+    }, [productos, categoria, oferta]);
+
     return (
         <main className="products-container">
-            <CategoryHeader categoria={categoria} />
+
+            <CategoryHeader
+                categoria={categoria}
+                image={heroImage}
+            />
 
             <ProductFilters
                 busqueda={busqueda}
@@ -99,6 +115,7 @@ const ItemListContainer = () => {
                                     precio={producto.precio}
                                     precioAnterior={producto.precioAnterior ?? producto.precioOriginal ?? null}
                                     img={producto.img}
+                                    images={producto.images}
                                     categoria={producto.categoria}
                                     oferta={producto.oferta}
                                     stock={producto.stock}

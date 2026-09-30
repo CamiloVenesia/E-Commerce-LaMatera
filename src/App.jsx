@@ -11,56 +11,40 @@ import Cart from "./components/Cart/Cart";
 import Checkout from "./components/Checkout/Checkout";
 import NotFound from "./components/NotFound/NotFound";
 import Footer from "./components/Footer/Footer";
+import Admin from "./components/Admin/Admin";
 
 import "./App.css";
-
 
 function ScrollToTop() {
     const { pathname } = useLocation();
 
     useEffect(() => {
         window.scrollTo({
-            top:0,
-            left:0,
-            behavior:"instant"
+            top: 0,
+            left: 0,
+            behavior: "instant"
         });
     }, [pathname]);
 
     return null;
 }
 
-
 function App() {
     return (
         <BrowserRouter>
-
             <ScrollToTop />
 
             <CartProvider>
-
                 <div className="app">
-
-                    <a 
-                        href="#contenido"
-                        className="skip-link"
-                    >
+                    <a href="#contenido" className="skip-link">
                         Saltar al contenido
                     </a>
 
                     <Navbar />
 
-                    <main 
-                        id="contenido"
-                        className="main-content"
-                        tabIndex={-1}
-                    >
-
+                    <main id="contenido" className="main-content" tabIndex={-1}>
                         <Routes>
-
-                            <Route 
-                                path="/"
-                                element={<Home />}
-                            />
+                            <Route path="/" element={<Home />} />
 
                             <Route
                                 path="/productos"
@@ -82,31 +66,19 @@ function App() {
                                 element={<ItemDetail />}
                             />
 
-                            <Route
-                                path="/cart"
-                                element={<Cart />}
-                            />
+                            <Route path="/cart" element={<Cart />} />
 
-                            <Route
-                                path="/checkout"
-                                element={<Checkout />}
-                            />
+                            <Route path="/checkout" element={<Checkout />} />
 
-                            <Route
-                                path="*"
-                                element={<NotFound />}
-                            />
+                            <Route path="/admin" element={<Admin />} />
 
+                            <Route path="*" element={<NotFound />} />
                         </Routes>
-
                     </main>
 
                     <Footer />
-
                 </div>
-
             </CartProvider>
-
         </BrowserRouter>
     );
 }

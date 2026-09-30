@@ -5,7 +5,17 @@ import { CartContext } from "../../context/CartContext";
 import Notification from "../Notification/Notification";
 import "./ProductCard.css";
 
-const ProductCard = ({ id, nombre, precio, precioAnterior, img, categoria, oferta, stock }) => {
+const ProductCard = ({
+    id,
+    nombre,
+    precio,
+    precioAnterior,
+    img,
+    images = [],
+    categoria,
+    oferta,
+    stock
+}) => {
     const navigate = useNavigate();
     const { addItem } = useContext(CartContext);
     const [showNotification, setShowNotification] = useState(false);
@@ -16,6 +26,10 @@ const ProductCard = ({ id, nombre, precio, precioAnterior, img, categoria, ofert
     const tieneDescuento = oferta && precioOriginal > precioActual;
     const porcentajeOferta = tieneDescuento ? Math.round(((precioOriginal - precioActual) / precioOriginal) * 100) : 0;
     const valorCuota = precioActual / 3;
+
+    const segundaImagen = Array.isArray(images) && images.length > 1
+        ? (typeof images[1] === "string" ? images[1] : images[1]?.url)
+        : null;
 
     const formatPrice = (value, decimals = 0) => Number(value).toLocaleString("es-AR", {
         minimumFractionDigits: decimals,
@@ -48,14 +62,29 @@ const ProductCard = ({ id, nombre, precio, precioAnterior, img, categoria, ofert
     return (
         <>
             <article
-                className={`product-card ${!hasStock ? "product-card-disabled" : ""}`}
+                className={`product-card ${!hasStock ? "product-card-disabled" : ""} ${segundaImagen ? "has-second-image" : ""}`}
                 onClick={handleCardClick}
                 onKeyDown={handleKeyDown}
                 role="link"
                 tabIndex={0}
             >
                 <div className="product-card-image">
-                    <img src={img} alt={nombre} className="product-card-img" loading="lazy" />
+                    <img
+                        src={img}
+                        alt={nombre}
+                        className="product-card-img product-card-img-primary"
+                        loading="lazy"
+                    />
+
+                    {segundaImagen && (
+                        <img
+                            src={segundaImagen}
+                            alt=""
+                            className="product-card-img product-card-img-secondary"
+                            loading="lazy"
+                            aria-hidden="true"
+                        />
+                    )}
 
                     <div className="product-image-footer">
                         <div className="product-image-footer-left">

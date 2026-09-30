@@ -1,41 +1,147 @@
+import { FiCreditCard, FiLock, FiStar, FiTruck, FiHome } from "react-icons/fi";
+import { Link } from "react-router-dom";
+
+import fondoMates from "../../assets/fondo-mates.jpg";
+import fondoTermos from "../../assets/fondo-termos.jpg";
+import fondoAccesorios from "../../assets/fondo-accesorios.jpg";
+import fondoProductos from "../../assets/fondo-productos.jpg";
+
 import "./CategoryHeader.css";
 
 const CategoryHeader = ({ categoria }) => {
 
     const data = {
-        mates:{
+        mates: {
             title:"Mates",
-            text:"Diseños artesanales seleccionados para acompañar tus mejores momentos."
+            text:"Tradición, diseño y calidad en cada detalle. Descubrí nuestra selección de mates artesanales para acompañar tus mejores momentos.",
+            image:fondoMates
         },
-        termos:{
+
+        termos: {
             title:"Termos",
-            text:"Mantienen la temperatura ideal para disfrutar donde estés."
+            text:"Diseños pensados para conservar la temperatura ideal y acompañarte durante todo el día, estés donde estés.",
+            image:fondoTermos
         },
-        accesorios:{
+
+        accesorios: {
             title:"Accesorios",
-            text:"Todo lo necesario para completar tu equipo matero."
+            text:"Todo lo necesario para completar tu equipo matero y disfrutar cada momento con comodidad y estilo.",
+            image:fondoAccesorios
         }
     };
 
     const info = data[categoria] || {
         title:"Todos los productos",
-        text:"Descubrí nuestra selección de mates, termos y accesorios."
+        text:"Descubrí nuestra selección de mates, termos y accesorios elegidos para acompañar tus mejores momentos.",
+        image:fondoProductos
     };
 
     return(
         <section className="category-header">
 
-            <span>
-                Catálogo
-            </span>
+            <div className="category-breadcrumb">
 
-            <h1>
-                {info.title}
-            </h1>
+                <Link to="/">
+                    <FiHome />
+                    Inicio
+                </Link>
 
-            <p>
-                {info.text}
-            </p>
+                <span>›</span>
+
+                <span>
+                    {info.title}
+                </span>
+
+            </div>
+
+            <div className="category-hero">
+
+                <div className="category-hero-image">
+
+                    <img
+                        src={info.image}
+                        alt={info.title}
+                    />
+
+                </div>
+
+                <div className="category-hero-content">
+
+                    <span className="category-eyebrow">
+                        La Matera
+                    </span>
+
+                    <h1>
+                        {info.title}
+                    </h1>
+
+                    <p>
+                        {info.text}
+                    </p>
+
+                    <div className="category-benefits">
+
+                        <div className="category-benefit">
+                            <FiTruck />
+
+                            <div>
+                                <strong>
+                                    Envíos
+                                </strong>
+
+                                <span>
+                                    A todo el país
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="category-benefit">
+                            <FiCreditCard />
+
+                            <div>
+                                <strong>
+                                    Cuotas
+                                </strong>
+
+                                <span>
+                                    Sin interés
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="category-benefit">
+                            <FiLock />
+
+                            <div>
+                                <strong>
+                                    Compra
+                                </strong>
+
+                                <span>
+                                    Segura
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="category-benefit">
+                            <FiStar />
+
+                            <div>
+                                <strong>
+                                    Ofertas
+                                </strong>
+
+                                <span>
+                                    Exclusivas
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </section>
     );

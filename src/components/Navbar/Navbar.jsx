@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 
@@ -11,6 +11,52 @@ import "./Navbar.css";
 function Navbar() {
 
     const [menuOpen, setMenuOpen] = useState(false);
+    const [navbarHidden, setNavbarHidden] = useState(false);
+
+    const lastScrollY = useRef(0);
+
+
+    useEffect(() => {
+
+        const handleScroll = () => {
+
+            const currentScrollY = window.scrollY;
+
+            if (menuOpen) {
+                setNavbarHidden(false);
+                lastScrollY.current = currentScrollY;
+                return;
+            }
+
+            if (currentScrollY <= 20) {
+                setNavbarHidden(false);
+            }
+            else if (currentScrollY > lastScrollY.current + 8) {
+                setNavbarHidden(true);
+            }
+            else if (currentScrollY < lastScrollY.current - 8) {
+                setNavbarHidden(false);
+            }
+
+            lastScrollY.current = currentScrollY;
+        };
+
+
+        window.addEventListener(
+            "scroll",
+            handleScroll,
+            { passive:true }
+        );
+
+
+        return () => {
+            window.removeEventListener(
+                "scroll",
+                handleScroll
+            );
+        };
+
+    }, [menuOpen]);
 
 
     const closeMenu = () => {
@@ -18,34 +64,42 @@ function Navbar() {
     };
 
 
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
+        setNavbarHidden(false);
+    };
+
+
     return (
 
-        <header className="navbar">
+        <header
+            className={`navbar ${navbarHidden ? "navbar-hidden" : ""}`}
+        >
 
             <div className="navbar-container">
 
 
-                <Link 
+                <Link
                     to="/"
                     className="navbar-logo"
                     onClick={closeMenu}
                 >
-                    <img 
+
+                    <img
                         src={logo}
                         alt="La Matera"
                     />
-                </Link>
 
+                </Link>
 
 
                 <button
                     className="navbar-toggle"
-                    onClick={() => setMenuOpen(!menuOpen)}
+                    onClick={toggleMenu}
                     aria-label="Abrir menú"
                 >
 
-                    {
-                        menuOpen
+                    {menuOpen
                         ?
                         <FiX />
                         :
@@ -55,8 +109,7 @@ function Navbar() {
                 </button>
 
 
-
-                <nav 
+                <nav
                     className={`navbar-links ${menuOpen ? "open" : ""}`}
                 >
 
@@ -69,14 +122,12 @@ function Navbar() {
                     </Link>
 
 
-
                     <Link
                         to="/productos"
                         onClick={closeMenu}
                     >
                         Productos
                     </Link>
-
 
 
                     <Link
@@ -87,7 +138,6 @@ function Navbar() {
                     </Link>
 
 
-
                     <Link
                         to="/productos?categoria=termos"
                         onClick={closeMenu}
@@ -96,14 +146,12 @@ function Navbar() {
                     </Link>
 
 
-
                     <Link
                         to="/productos?categoria=accesorios"
                         onClick={closeMenu}
                     >
                         Accesorios
                     </Link>
-
 
 
                     <Link
@@ -117,7 +165,6 @@ function Navbar() {
                 </nav>
 
 
-
                 <div className="navbar-cart">
 
                     <CartWidget />
@@ -125,9 +172,7 @@ function Navbar() {
                 </div>
 
 
-
             </div>
-
 
         </header>
 

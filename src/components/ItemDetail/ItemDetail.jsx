@@ -1,45 +1,59 @@
 import { Link, useParams } from "react-router-dom";
+
 import { useEffect, useState, useContext } from "react";
+
+import { doc, getDoc } from "firebase/firestore";
+
 import {
     FiShoppingBag,
     FiCreditCard,
     FiCheck,
     FiChevronDown,
     FiMinus,
-    FiPlus
+    FiPlus,
 } from "react-icons/fi";
-import { doc, getDoc } from "firebase/firestore";
 
 import { db } from "../../firebaseConfig";
+
 import { CartContext } from "../../context/CartContext";
+
 import Loader from "../Loader/Loader";
+
 import Notification from "../Notification/Notification";
 
 import "./ItemDetail.css";
+
 
 const money = (value) =>
     new Intl.NumberFormat("es-AR", {
         style: "currency",
         currency: "ARS",
-        minimumFractionDigits: 2
+        minimumFractionDigits: 2,
     }).format(value);
+
 
 function ItemDetail() {
     const { id } = useParams();
+
     const { cart, addItem } = useContext(CartContext);
 
     const [result, setResult] = useState({
         id: null,
         product: null,
         loading: true,
-        error: null
+        error: null,
     });
 
     const [activeImage, setActiveImage] = useState(0);
+
     const [failedImages, setFailedImages] = useState([]);
+
     const [quantity, setQuantity] = useState(1);
+
     const [added, setAdded] = useState(false);
+
     const [showNotification, setShowNotification] = useState(false);
+
 
     useEffect(() => {
         let cancelled = false;
@@ -48,7 +62,7 @@ function ItemDetail() {
             id,
             product: null,
             loading: true,
-            error: null
+            error: null,
         });
 
         setActiveImage(0);
@@ -56,6 +70,7 @@ function ItemDetail() {
         setQuantity(1);
         setAdded(false);
         setShowNotification(false);
+
 
         async function fetchProduct() {
             try {
@@ -68,14 +83,14 @@ function ItemDetail() {
                         id,
                         product: snapshot.exists()
                             ? {
-                                  ...snapshot.data(),
-                                  id: snapshot.id
-                              }
+                                ...snapshot.data(),
+                                id: snapshot.id,
+                            }
                             : null,
                         loading: false,
                         error: snapshot.exists()
                             ? null
-                            : "No encontramos este producto."
+                            : "No encontramos este producto.",
                     });
                 }
             } catch (error) {
@@ -87,27 +102,34 @@ function ItemDetail() {
                         product: null,
                         loading: false,
                         error:
-                            "No pudimos cargar el producto. Intentá nuevamente más tarde."
+                            "No pudimos cargar el producto. Intentá nuevamente más tarde.",
                     });
                 }
             }
         }
 
+
         fetchProduct();
+
 
         return () => {
             cancelled = true;
         };
     }, [id]);
 
+
     if (result.loading || result.id !== id) {
         return (
-            <div className="lm-detail-state" role="status">
+            <div
+                className="lm-detail-state"
+                role="status"
+            >
                 <Loader />
                 <span>Cargando producto…</span>
             </div>
         );
     }
+
 
     if (result.error || !result.product) {
         return (
@@ -123,7 +145,9 @@ function ItemDetail() {
         );
     }
 
+
     const producto = result.product;
+
     const price = Number(producto.precio);
 
     const validPrice =
@@ -150,42 +174,129 @@ function ItemDetail() {
 
     const inCart =
         Number(
-            cart.find((item) => item.id === producto.id)?.quantity
+            cart.find(
+                (item) => item.id === producto.id
+            )?.quantity
         ) || 0;
 
-    const available = Math.max(0, stock - inCart);
-    const selectedQuantity = Math.min(quantity, available);
+    const available = Math.max(
+        0,
+        stock - inCart
+    );
+
+    const selectedQuantity = Math.min(
+        quantity,
+        available
+    );
+
+
+    /*
+     * GALERÍA DE IMÁGENES
+     *
+     * El administrador guarda actualmente:
+     *
+     * images: [
+     *   {
+     *     publicId: "...",
+     *     url: "https://..."
+     *   },
+     *   ...
+     * ]
+     *
+     * También mantenemos compatibilidad con
+     * productos antiguos que puedan tener:
+     *
+     * imagenes: ["https://...", "..."]
+     *
+     * o incluso objetos con url.
+     */
+
+
+    const firestoreImages = Array.isArray(producto.images)
+        ? producto.images
+            .map((image) => {
+                if (typeof image === "string") {
+                    return image;
+                }
+
+                if (
+                    image &&
+                    typeof image.url === "string"
+                ) {
+                    return image.url;
+                }
+
+                return null;
+            })
+            .filter(Boolean)
+        : [];
+
+
+    const legacyImages = Array.isArray(producto.imagenes)
+        ? producto.imagenes
+            .map((image) => {
+                if (typeof image === "string") {
+                    return image;
+                }
+
+                if (
+                    image &&
+                    typeof image.url === "string"
+                ) {
+                    return image.url;
+                }
+
+                return null;
+            })
+            .filter(Boolean)
+        : [];
+
+
+    /*
+     * La imagen principal antigua está en producto.img.
+     *
+     * Después agregamos las imágenes de la galería.
+     *
+     * Set evita mostrar dos veces la misma imagen.
+     */
 
     const images = [
-        ...new Set(
-            [
-                producto.img,
-                ...(Array.isArray(producto.imagenes)
-                    ? producto.imagenes
-                    : [])
-            ].filter(
-                (src) =>
-                    typeof src === "string" &&
-                    src.trim()
-            )
-        )
+        producto.img,
+        ...firestoreImages,
+        ...legacyImages,
+    ].filter(
+        (src) =>
+            typeof src === "string" &&
+            src.trim()
+    );
+
+
+    const uniqueImages = [
+        ...new Set(images),
     ];
 
+
     const currentImage =
-        images[activeImage] || images[0];
+        uniqueImages[activeImage] ||
+        uniqueImages[0];
+
 
     const specs = [
         ["Material", producto.material],
         ["Origen", producto.origen],
-        ["Capacidad", producto.capacidad]
+        ["Capacidad", producto.capacidad],
     ].filter(
         ([, value]) =>
             typeof value === "string" ||
             typeof value === "number"
     );
 
+
     function handleAdd() {
-        if (!validPrice || selectedQuantity < 1) {
+        if (
+            !validPrice ||
+            selectedQuantity < 1
+        ) {
             return;
         }
 
@@ -193,24 +304,33 @@ function ItemDetail() {
             {
                 ...producto,
                 precio: price,
-                stock
+                stock,
             },
             selectedQuantity
         );
 
         setAdded(true);
+
         setShowNotification(true);
+
         setQuantity(1);
     }
 
+
     return (
         <article className="lm-detail">
+
             <nav
                 className="lm-detail-breadcrumb"
                 aria-label="Ubicación"
             >
-                <Link to="/">Inicio</Link>
-                <span aria-hidden="true">/</span>
+                <Link to="/">
+                    Inicio
+                </Link>
+
+                <span aria-hidden="true">
+                    /
+                </span>
 
                 <Link to="/productos">
                     Productos
@@ -218,10 +338,12 @@ function ItemDetail() {
 
                 {producto.categoria && (
                     <>
-                        <span aria-hidden="true">/</span>
+                        <span aria-hidden="true">
+                            /
+                        </span>
 
                         <Link
-                            to={`/productos?categoria=${encodeURIComponent(
+                            to={`/categoria/${encodeURIComponent(
                                 producto.categoria
                             )}`}
                         >
@@ -230,69 +352,96 @@ function ItemDetail() {
                     </>
                 )}
 
-                <span aria-hidden="true">/</span>
+                <span aria-hidden="true">
+                    /
+                </span>
 
                 <span aria-current="page">
                     {producto.nombre}
                 </span>
             </nav>
 
+
             <div className="lm-detail-grid">
+
                 <section
                     className="lm-detail-gallery"
                     aria-label="Imágenes del producto"
                 >
-                    {images.length > 0 && (
+
+                    {uniqueImages.length > 0 && (
                         <div
                             className="lm-detail-thumbnails"
                             aria-label="Seleccionar imagen"
                         >
-                            {images.map((src, index) => (
-                                <button
-                                    key={src}
-                                    type="button"
-                                    className={`lm-detail-thumb ${
-                                        index === activeImage
-                                            ? "is-active"
-                                            : ""
-                                    }`}
-                                    aria-label={`Ver imagen ${
-                                        index + 1
-                                    } de ${producto.nombre}`}
-                                    aria-pressed={
-                                        index === activeImage
-                                    }
-                                    onClick={() =>
-                                        setActiveImage(index)
-                                    }
-                                >
-                                    {failedImages.includes(src) ? (
-                                        <span>
-                                            Imagen {index + 1}
-                                        </span>
-                                    ) : (
-                                        <img
-                                            src={src}
-                                            alt=""
-                                            loading="lazy"
-                                            onError={() =>
-                                                setFailedImages(
-                                                    (prev) => [
-                                                        ...prev,
-                                                        src
-                                                    ]
-                                                )
-                                            }
-                                        />
-                                    )}
-                                </button>
-                            ))}
+
+                            {uniqueImages.map(
+                                (src, index) => (
+                                    <button
+                                        key={src}
+                                        type="button"
+                                        className={`lm-detail-thumb ${
+                                            index === activeImage
+                                                ? "is-active"
+                                                : ""
+                                        }`}
+                                        aria-label={`Ver imagen ${
+                                            index + 1
+                                        } de ${
+                                            producto.nombre
+                                        }`}
+                                        aria-pressed={
+                                            index === activeImage
+                                        }
+                                        onClick={() =>
+                                            setActiveImage(
+                                                index
+                                            )
+                                        }
+                                    >
+
+                                        {failedImages.includes(
+                                            src
+                                        ) ? (
+                                            <span>
+                                                Imagen{" "}
+                                                {index + 1}
+                                            </span>
+                                        ) : (
+                                            <img
+                                                src={src}
+                                                alt=""
+                                                loading="lazy"
+                                                onError={() =>
+                                                    setFailedImages(
+                                                        (prev) =>
+                                                            prev.includes(
+                                                                src
+                                                            )
+                                                                ? prev
+                                                                : [
+                                                                    ...prev,
+                                                                    src,
+                                                                ]
+                                                    )
+                                                }
+                                            />
+                                        )}
+
+                                    </button>
+                                )
+                            )}
+
                         </div>
                     )}
 
+
                     <div className="lm-detail-photo">
+
                         {currentImage &&
-                        !failedImages.includes(currentImage) ? (
+                        !failedImages.includes(
+                            currentImage
+                        ) ? (
                             <img
                                 className="lm-detail-main-image"
                                 src={currentImage}
@@ -300,10 +449,17 @@ function ItemDetail() {
                                     activeImage + 1
                                 }`}
                                 onError={() =>
-                                    setFailedImages((prev) => [
-                                        ...prev,
-                                        currentImage
-                                    ])
+                                    setFailedImages(
+                                        (prev) =>
+                                            prev.includes(
+                                                currentImage
+                                            )
+                                                ? prev
+                                                : [
+                                                    ...prev,
+                                                    currentImage,
+                                                ]
+                                    )
                                 }
                             />
                         ) : (
@@ -315,29 +471,43 @@ function ItemDetail() {
                             </div>
                         )}
 
+
                         {discount && (
                             <span className="lm-detail-offer">
                                 {percentage}% OFF
                             </span>
                         )}
 
-                        {images.length > 1 && (
+
+                        {uniqueImages.length > 1 && (
                             <span className="lm-detail-image-count">
-                                {activeImage + 1} / {images.length}
+                                {activeImage + 1} /{" "}
+                                {uniqueImages.length}
                             </span>
                         )}
+
                     </div>
+
                 </section>
 
+
                 <div className="lm-detail-info">
+
                     <p className="lm-detail-category">
-                        {producto.categoria || "La Matera"}
+                        {producto.categoria ||
+                            "La Matera"}
                     </p>
 
-                    <h1>{producto.nombre}</h1>
+
+                    <h1>
+                        {producto.nombre}
+                    </h1>
+
 
                     <div className="lm-detail-pricing">
+
                         <div className="lm-detail-price-row">
+
                             {discount && (
                                 <del>
                                     {money(oldPrice)}
@@ -355,11 +525,16 @@ function ItemDetail() {
                                     {percentage}% OFF
                                 </span>
                             )}
+
                         </div>
+
 
                         {validPrice && (
                             <p className="lm-detail-installments">
-                                <FiCreditCard aria-hidden="true" />
+
+                                <FiCreditCard
+                                    aria-hidden="true"
+                                />
 
                                 <span>
                                     3 cuotas sin interés de{" "}
@@ -367,13 +542,18 @@ function ItemDetail() {
                                         {money(price / 3)}
                                     </strong>
                                 </span>
+
                             </p>
                         )}
+
                     </div>
+
 
                     <p
                         className={`lm-detail-stock ${
-                            stock === 0 ? "is-empty" : ""
+                            stock === 0
+                                ? "is-empty"
+                                : ""
                         }`}
                     >
                         <span aria-hidden="true" />
@@ -381,9 +561,10 @@ function ItemDetail() {
                         {stock === 0
                             ? "Sin stock por el momento"
                             : stock <= 3
-                              ? `Últimas ${stock} unidades`
-                              : "En stock"}
+                                ? `Últimas ${stock} unidades`
+                                : "En stock"}
                     </p>
+
 
                     {producto.descripcion && (
                         <p className="lm-detail-intro">
@@ -391,13 +572,16 @@ function ItemDetail() {
                         </p>
                     )}
 
+
                     <div className="lm-detail-purchase">
+
                         {available > 0 && (
                             <div
                                 className="lm-detail-quantity"
                                 role="group"
                                 aria-label="Cantidad"
                             >
+
                                 <button
                                     type="button"
                                     aria-label="Disminuir cantidad"
@@ -413,12 +597,14 @@ function ItemDetail() {
                                     <FiMinus />
                                 </button>
 
+
                                 <output
                                     aria-live="polite"
                                     aria-label="Cantidad seleccionada"
                                 >
                                     {selectedQuantity}
                                 </output>
+
 
                                 <button
                                     type="button"
@@ -435,8 +621,10 @@ function ItemDetail() {
                                 >
                                     <FiPlus />
                                 </button>
+
                             </div>
                         )}
+
 
                         <button
                             type="button"
@@ -447,15 +635,19 @@ function ItemDetail() {
                             }
                             onClick={handleAdd}
                         >
-                            <FiShoppingBag aria-hidden="true" />
+                            <FiShoppingBag
+                                aria-hidden="true"
+                            />
 
                             {stock === 0
                                 ? "Sin stock"
                                 : available === 0
-                                  ? "Stock disponible en tu carrito"
-                                  : "Agregar al carrito"}
+                                    ? "Stock disponible en tu carrito"
+                                    : "Agregar al carrito"}
                         </button>
+
                     </div>
+
 
                     {inCart > 0 && (
                         <p className="lm-detail-cart-note">
@@ -467,12 +659,15 @@ function ItemDetail() {
                         </p>
                     )}
 
+
                     {added && (
                         <p
                             className="lm-detail-added"
                             role="status"
                         >
-                            <FiCheck aria-hidden="true" />
+                            <FiCheck
+                                aria-hidden="true"
+                            />
 
                             Producto agregado.
 
@@ -482,14 +677,21 @@ function ItemDetail() {
                         </p>
                     )}
 
+
                     <div className="lm-detail-accordions">
+
                         <details open>
+
                             <summary>
                                 Información del producto
-                                <FiChevronDown aria-hidden="true" />
+
+                                <FiChevronDown
+                                    aria-hidden="true"
+                                />
                             </summary>
 
                             <div className="lm-detail-panel">
+
                                 {producto.descripcion ? (
                                     <p>
                                         {producto.descripcion}
@@ -503,11 +705,18 @@ function ItemDetail() {
                                     </p>
                                 )}
 
+
                                 {specs.length > 0 && (
                                     <dl>
+
                                         {specs.map(
-                                            ([label, value]) => (
-                                                <div key={label}>
+                                            ([
+                                                label,
+                                                value,
+                                            ]) => (
+                                                <div
+                                                    key={label}
+                                                >
                                                     <dt>
                                                         {label}
                                                     </dt>
@@ -518,62 +727,100 @@ function ItemDetail() {
                                                 </div>
                                             )
                                         )}
+
                                     </dl>
                                 )}
+
                             </div>
+
                         </details>
+
 
                         {validPrice && (
                             <details>
+
                                 <summary>
                                     Cuotas sin interés
-                                    <FiChevronDown aria-hidden="true" />
+
+                                    <FiChevronDown
+                                        aria-hidden="true"
+                                    />
                                 </summary>
 
                                 <div className="lm-detail-panel">
+
                                     <p>
-                                        3 cuotas sin interés de{" "}
-                                        {money(price / 3)}.
-                                        Precio total del
-                                        producto:{" "}
+                                        3 cuotas sin
+                                        interés de{" "}
+                                        {money(
+                                            price / 3
+                                        )}
+                                        . Precio total
+                                        del producto:{" "}
                                         {money(price)}.
                                     </p>
+
                                 </div>
+
                             </details>
                         )}
 
-                        {typeof producto.envio === "string" &&
+
+                        {typeof producto.envio ===
+                            "string" &&
                             producto.envio && (
                                 <details>
+
                                     <summary>
                                         Información de envío
-                                        <FiChevronDown aria-hidden="true" />
+
+                                        <FiChevronDown
+                                            aria-hidden="true"
+                                        />
                                     </summary>
 
                                     <div className="lm-detail-panel">
+
                                         <p>
-                                            {producto.envio}
+                                            {
+                                                producto.envio
+                                            }
                                         </p>
+
                                     </div>
+
                                 </details>
                             )}
 
-                        {typeof producto.cuidados === "string" &&
+
+                        {typeof producto.cuidados ===
+                            "string" &&
                             producto.cuidados && (
                                 <details>
+
                                     <summary>
                                         Cuidados
-                                        <FiChevronDown aria-hidden="true" />
+
+                                        <FiChevronDown
+                                            aria-hidden="true"
+                                        />
                                     </summary>
 
                                     <div className="lm-detail-panel">
+
                                         <p>
-                                            {producto.cuidados}
+                                            {
+                                                producto.cuidados
+                                            }
                                         </p>
+
                                     </div>
+
                                 </details>
                             )}
+
                     </div>
+
 
                     <Link
                         className="lm-detail-back"
@@ -581,8 +828,11 @@ function ItemDetail() {
                     >
                         ← Seguir explorando
                     </Link>
+
                 </div>
+
             </div>
+
 
             {showNotification && (
                 <Notification
@@ -592,8 +842,10 @@ function ItemDetail() {
                     }
                 />
             )}
+
         </article>
     );
 }
+
 
 export default ItemDetail;

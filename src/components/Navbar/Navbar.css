@@ -1,12 +1,19 @@
 .navbar{
-    width:100%;
-    background:var(--color-surface);
-    border-bottom:1px solid var(--color-border);
     position:sticky;
     top:0;
     z-index:1000;
+    width:100%;
+    background:rgba(255,255,255,.97);
+    border-bottom:1px solid var(--color-border);
+    transition:
+        transform .32s ease,
+        box-shadow .32s ease;
 }
 
+.navbar-hidden{
+    transform:translateY(-100%);
+    box-shadow:none;
+}
 
 .navbar-container{
     max-width:var(--container-width);
@@ -19,19 +26,15 @@
     justify-content:space-between;
 }
 
-
 .navbar-logo{
     display:flex;
     align-items:center;
 }
 
-
 .navbar-logo img{
     width:190px;
     height:auto;
 }
-
-
 
 .navbar-links{
     display:flex;
@@ -39,34 +42,24 @@
     gap:38px;
 }
 
-
 .navbar-links a{
+    position:relative;
 
-    font-size:0.95rem;
     color:var(--color-text-secondary);
+    font-size:.95rem;
 
     transition:
-    color var(--transition-fast);
-
-    position:relative;
+        color var(--transition-fast);
 }
-
-
 
 .navbar-links a:hover{
-
     color:var(--color-text);
-
 }
 
-
-
 .navbar-links a::after{
-
     content:"";
 
     position:absolute;
-
     bottom:-8px;
     left:0;
 
@@ -76,123 +69,75 @@
     background:var(--color-primary);
 
     transition:
-    width var(--transition-fast);
-
+        width var(--transition-fast);
 }
-
-
 
 .navbar-links a:hover::after{
-
     width:100%;
-
 }
-
-
 
 .navbar-cart{
-
     display:flex;
     align-items:center;
-
 }
 
-
-
 .navbar-toggle{
-
     display:none;
 
     background:none;
-
-    font-size:1.8rem;
-
     color:var(--color-text);
 
+    font-size:1.8rem;
     cursor:pointer;
-
 }
-
 
 
 @media(max-width:900px){
 
-
     .navbar-container{
-
         height:75px;
-
         padding:0 20px;
-
     }
-
-
 
     .navbar-logo img{
-
         width:150px;
-
     }
-
-
 
     .navbar-toggle{
-
         display:block;
-
         order:2;
-
     }
-
-
 
     .navbar-cart{
-
         margin-left:auto;
-
         margin-right:20px;
-
     }
 
-
-
     .navbar-links{
-
         position:absolute;
-
         top:75px;
         left:0;
 
         width:100%;
 
-        background:var(--color-surface);
-
         padding:30px;
 
         display:flex;
-
         flex-direction:column;
-
         align-items:flex-start;
-
         gap:25px;
 
+        background:var(--color-surface);
         border-bottom:1px solid var(--color-border);
 
         transform:translateY(-120%);
 
         transition:
-        transform var(--transition-normal);
-
+            transform var(--transition-normal);
     }
-
-
 
     .navbar-links.open{
-
         transform:translateY(0);
-
     }
-
 
 }
