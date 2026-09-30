@@ -1,5 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import {
+    getFirestore,
+    connectFirestoreEmulator
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
@@ -28,9 +31,15 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
 
-// Conectar temporalmente al Firestore Emulator
+// Usa Emulator solamente cuando estás desarrollando localmente
 if (import.meta.env.DEV) {
-    connectFirestoreEmulator(db, "127.0.0.1", 8080);
+
+    connectFirestoreEmulator(
+        db,
+        "127.0.0.1",
+        8080
+    );
+
 }
 
 
