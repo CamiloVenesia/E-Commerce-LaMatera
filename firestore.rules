@@ -1,0 +1,229 @@
+rules_version = '2';
+
+service cloud.firestore {
+
+    match /databases/{database}/documents {
+
+
+        function isAdmin() {
+
+            return request.auth != null
+                && request.auth.token.email
+                    == "admin.lamatera@gmail.com";
+
+        }
+
+
+
+        function validOrderCreate() {
+
+            return request.resource.data.keys().hasAll([
+                "buyer",
+                "fecha",
+                "estado"
+            ])
+
+            && request.resource.data.keys().hasOnly([
+                "buyer",
+                "fecha",
+                "estado"
+            ])
+
+            && request.resource.data.buyer is map
+
+            && request.resource.data.buyer.keys().hasAll([
+                "name",
+                "email",
+                "phone",
+                "address"
+            ])
+
+            && request.resource.data.buyer.keys().hasOnly([
+                "name",
+                "email",
+                "phone",
+                "address"
+            ])
+
+            && request.resource.data.buyer.name is string
+            && request.resource.data.buyer.email is string
+            && request.resource.data.buyer.phone is string
+            && request.resource.data.buyer.address is string
+
+            && request.resource.data.fecha is timestamp
+
+            && request.resource.data.estado == "confirmada";
+
+        }
+
+
+
+        function validOrderItemCreate(productoId) {
+
+            return request.resource.data.keys().hasAll([
+                "productoId",
+                "nombre",
+                "precio",
+                "cantidad"
+            ])
+
+            && request.resource.data.keys().hasOnly([
+                "productoId",
+                "nombre",
+                "precio",
+                "cantidad"
+            ])
+
+            && request.resource.data.productoId == productoId
+
+            && request.resource.data.nombre is string
+
+            && request.resource.data.precio is number
+
+            && request.resource.data.cantidad is int
+
+            && request.resource.data.cantidad > 0;
+
+        }
+
+
+
+        function validStockCheckout(productoId) {
+
+            let orderId =
+                request.resource.data.get(
+                    "ultimaOrdenId",
+                    ""
+                );
+
+
+            let orderAfter =
+                getAfter(
+                    /databases/$(database)/documents/ordenes/$(orderId)
+                );
+
+
+            let itemAfter =
+                getAfter(
+                    /databases/$(database)/documents/ordenes/$(orderId)/items/$(productoId)
+                );
+
+
+            return orderId is string
+
+                && orderId != ""
+
+                && orderAfter.data.estado
+                    == "confirmada"
+
+
+                && itemAfter.data.productoId
+                    == productoId
+
+
+                && itemAfter.data.nombre
+                    == resource.data.nombre
+
+
+                && itemAfter.data.precio
+                    == resource.data.precio
+
+
+                && itemAfter.data.cantidad is int
+
+
+                && itemAfter.data.cantidad > 0
+
+
+                && request.resource.data
+                    .diff(resource.data)
+                    .affectedKeys()
+                    .hasOnly([
+                        "stock",
+                        "ultimaOrdenId"
+                    ])
+
+
+                && resource.data.stock is int
+
+
+                && request.resource.data.stock is int
+
+
+                && request.resource.data.stock >= 0
+
+
+                && request.resource.data.stock
+                    ==
+                    resource.data.stock
+                    - itemAfter.data.cantidad;
+
+        }
+
+
+
+        match /productos/{productoId} {
+
+
+            allow read: if true;
+
+
+            allow create: if isAdmin();
+
+
+            allow delete: if isAdmin();
+
+
+            allow update: if isAdmin()
+                || validStockCheckout(productoId);
+
+        }
+
+
+
+        match /ordenes/{ordenId} {
+
+
+            allow create: if validOrderCreate();
+
+
+            allow read: if isAdmin();
+
+
+            allow update: if false;
+
+
+            allow delete: if false;
+
+
+
+            match /items/{productoId} {
+
+
+                allow create:
+                    if validOrderItemCreate(productoId);
+
+
+                allow read: if isAdmin();
+
+
+                allow update: if false;
+
+
+                allow delete: if false;
+
+            }
+
+        }
+
+
+
+        match /{document=**} {
+
+            allow read, write: if false;
+
+        }
+
+    }
+
+}
