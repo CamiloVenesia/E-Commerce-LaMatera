@@ -1,58 +1,79 @@
 import { Link } from "react-router-dom";
 import { FiArrowRight } from "react-icons/fi";
+
 import "./Hero.css";
 
-import heroImage from "../../../assets/hero-matera.jpg";
+import bannerHome from "../../../assets/banner-home.jpg";
+
 
 const Hero = () => {
-  return (
-    <section className="hero">
 
-      <div className="hero-content">
+    return (
 
-        <span className="hero-tag">
-          Mates · Termos · Accesorios
-        </span>
+        <section
+            className="hero"
+            style={{
+                backgroundImage: `url(${bannerHome})`
+            }}
+        >
 
-        <h1>
-          El mate,
-          <br />
-          llevado a otro nivel.
-        </h1>
+            <div className="hero-overlay" />
 
-        <p>
-          Productos seleccionados para acompañar tus momentos,
-          desde la tradición y el diseño.
-        </p>
+            <div className="hero-content">
 
-        <div className="hero-actions">
+                <div className="hero-tag">
 
-          <Link to="/productos" className="hero-button">
-            Ver productos
-            <FiArrowRight />
-          </Link>
+                    <span className="hero-tag-line" />
 
-          <Link to="/ofertas" className="hero-button-secondary">
-            Ver ofertas
-          </Link>
+                    <span>
+                        Mates · Termos · Accesorios
+                    </span>
 
-        </div>
-
-      </div>
+                </div>
 
 
-      <div className="hero-image">
-
-        <img
-          src={heroImage}
-          alt="Mate artesanal La Matera"
-        />
-
-      </div>
+                <h1>
+                    El mate,
+                    <br />
+                    llevado a otro nivel.
+                </h1>
 
 
-    </section>
-  );
+                <p>
+                    Productos seleccionados para acompañar tus mejores
+                    momentos, desde la tradición y el diseño.
+                </p>
+
+
+                <div className="hero-actions">
+
+                    <Link
+                        to="/productos"
+                        className="hero-button"
+                    >
+                        Ver productos
+
+                        <FiArrowRight />
+
+                    </Link>
+
+
+                    <Link
+                        to="/productos?oferta=true"
+                        className="hero-button-secondary"
+                    >
+                        Ver ofertas
+                    </Link>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    );
+
 };
+
 
 export default Hero;

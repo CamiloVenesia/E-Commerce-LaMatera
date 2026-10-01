@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiMenu, FiX } from "react-icons/fi";
+import {
+    FiMenu,
+    FiX,
+    FiSearch,
+    FiUser
+} from "react-icons/fi";
 
 import CartWidget from "../CartWidget/CartWidget";
 import logo from "../../assets/LogoLaMatera.png";
@@ -45,7 +50,7 @@ function Navbar() {
         window.addEventListener(
             "scroll",
             handleScroll,
-            { passive:true }
+            { passive: true }
         );
 
 
@@ -113,7 +118,6 @@ function Navbar() {
                     className={`navbar-links ${menuOpen ? "open" : ""}`}
                 >
 
-
                     <Link
                         to="/"
                         onClick={closeMenu}
@@ -161,13 +165,34 @@ function Navbar() {
                         Ofertas
                     </Link>
 
-
                 </nav>
 
 
-                <div className="navbar-cart">
+                <div className="navbar-actions">
 
-                    <CartWidget />
+                    <Link
+                        to="/productos"
+                        className="navbar-action"
+                        aria-label="Buscar productos"
+                        onClick={closeMenu}
+                    >
+                        <FiSearch />
+                    </Link>
+
+
+                    <Link
+                        to="/admin"
+                        className="navbar-action"
+                        aria-label="Acceso a administración"
+                        onClick={closeMenu}
+                    >
+                        <FiUser />
+                    </Link>
+
+
+                    <div className="navbar-cart">
+                        <CartWidget />
+                    </div>
 
                 </div>
 
