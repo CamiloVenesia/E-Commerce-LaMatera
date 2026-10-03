@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs, limit, query } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { Link } from "react-router-dom";
 
 import { db } from "../../../firebaseConfig";
+import ProductCard from "../../ProductCard/ProductCard";
+
 import "./FeaturedProducts.css";
 
 
 const FeaturedProducts = () => {
 
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
@@ -18,18 +21,19 @@ const FeaturedProducts = () => {
             try {
 
                 const productsQuery = query(
-                    collection(db, "productos"),
-                    limit(4)
+                    collection(db, "productos")
                 );
-
 
                 const snapshot = await getDocs(productsQuery);
 
 
-                const productsData = snapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+                const productsData = snapshot.docs
+                    .map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }))
+                    .filter((product) => product.oferta === true)
+                    .slice(0, 4);
 
 
                 setProducts(productsData);
@@ -38,9 +42,13 @@ const FeaturedProducts = () => {
             } catch (error) {
 
                 console.error(
-                    "Error cargando productos destacados:",
+                    "Error cargando productos en oferta:",
                     error
                 );
+
+            } finally {
+
+                setLoading(false);
 
             }
 
@@ -52,130 +60,85 @@ const FeaturedProducts = () => {
     }, []);
 
 
-
     return (
 
         <section className="featured-products">
 
-
             <header className="featured-header">
 
                 <span>
-                    Selección La Matera
+                    Ofertas La Matera
                 </span>
 
 
                 <h2>
-                    Productos destacados
+                    Productos en oferta
                 </h2>
 
 
                 <p>
-                    Algunos de nuestros favoritos para acompañar
-                    cada momento.
+                    Aprovechá nuestras promociones y encontrá tus
+                    productos favoritos al mejor precio.
                 </p>
 
             </header>
 
 
+            {loading ? (
 
-            <div className="products-grid">
+                <div className="featured-loading">
+                    Cargando ofertas...
+                </div>
 
+            ) : products.length > 0 ? (
 
-                {
-                    products.map((product) => (
+                <div className="featured-products-grid">
 
-                        <article
-                            className="featured-card"
+                    {products.map((product) => (
+
+                        <ProductCard
                             key={product.id}
-                        >
+                            id={product.id}
+                            nombre={product.nombre}
+                            precio={product.precio}
+                            precioAnterior={
+                                product.precioAnterior ??
+                                product.precioOriginal ??
+                                null
+                            }
+                            img={product.img}
+                            images={product.images}
+                            categoria={product.categoria}
+                            oferta={product.oferta}
+                            stock={product.stock}
+                        />
 
+                    ))}
 
-                            <div className="featured-image">
+                </div>
 
+            ) : (
 
-                                {
-                                    product.oferta && (
+                <div className="featured-empty">
 
-                                        <span className="badge">
-                                            Oferta
-                                        </span>
+                    <h3>
+                        No hay ofertas disponibles
+                    </h3>
 
-                                    )
-                                }
+                    <p>
+                        Volvé pronto para descubrir nuevas promociones.
+                    </p>
 
+                </div>
 
-                                {
-                                    product.stock === 0 && (
-
-                                        <span className="badge stock">
-                                            Sin stock
-                                        </span>
-
-                                    )
-                                }
-
-
-
-                                <img
-                                    src={product.img}
-                                    alt={product.nombre}
-                                />
-
-
-                            </div>
-
-
-
-
-                            <div className="featured-info">
-
-
-                                <span className="category">
-                                    {product.categoria}
-                                </span>
-
-
-
-                                <h3>
-                                    {product.nombre}
-                                </h3>
-
-
-
-                                <p className="price">
-                                    ${product.precio}
-                                </p>
-
-
-
-                                <Link
-                                    to={`/producto/${product.id}`}
-                                    className="featured-button"
-                                >
-                                    Ver producto →
-                                </Link>
-
-
-                            </div>
-
-
-
-                        </article>
-
-                    ))
-                }
-
-
-            </div>
-
+            )}
 
 
             <Link
-                to="/productos"
-                className="all-products-button"
+                to="/productos?oferta=true"
+                className="all-offers-button"
             >
-                Ver todos los productos →
+                Ver todas las ofertas →
             </Link>
 
 
