@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
     FiMenu,
     FiX,
-    FiSearch,
-    FiUser
+    FiSearch
 } from "react-icons/fi";
 
 import CartWidget from "../CartWidget/CartWidget";
-import logo from "../../assets/LogoLaMatera.png";
+import logo from "../../assets/LaMateraLogo.png";
 
 import "./Navbar.css";
 
@@ -19,6 +18,11 @@ function Navbar() {
     const [navbarHidden, setNavbarHidden] = useState(false);
 
     const lastScrollY = useRef(0);
+    const location = useLocation();
+
+    const params = new URLSearchParams(location.search);
+    const categoria = params.get("categoria");
+    const oferta = params.get("oferta");
 
 
     useEffect(() => {
@@ -75,6 +79,46 @@ function Navbar() {
     };
 
 
+    const isActive = (section) => {
+        switch (section) {
+            case "inicio":
+                return location.pathname === "/";
+
+            case "productos":
+                return (
+                    location.pathname === "/productos" &&
+                    !categoria &&
+                    oferta !== "true"
+                ) ||
+                    location.pathname.startsWith("/producto/") ||
+                    location.pathname.startsWith("/detalle/");
+
+            case "mates":
+                return (
+                    location.pathname === "/productos" && categoria === "mates"
+                ) || location.pathname === "/categoria/mates";
+
+            case "termos":
+                return (
+                    location.pathname === "/productos" && categoria === "termos"
+                ) || location.pathname === "/categoria/termos";
+
+            case "accesorios":
+                return (
+                    location.pathname === "/productos" && categoria === "accesorios"
+                ) || location.pathname === "/categoria/accesorios";
+
+            case "ofertas":
+                return (
+                    location.pathname === "/productos" && oferta === "true"
+                );
+
+            default:
+                return false;
+        }
+    };
+
+
     return (
 
         <header
@@ -88,6 +132,7 @@ function Navbar() {
                     to="/"
                     className="navbar-logo"
                     onClick={closeMenu}
+                    aria-label="La Matera - Inicio"
                 >
 
                     <img
@@ -102,6 +147,7 @@ function Navbar() {
                     className="navbar-toggle"
                     onClick={toggleMenu}
                     aria-label="Abrir menú"
+                    aria-expanded={menuOpen}
                 >
 
                     {menuOpen
@@ -116,10 +162,13 @@ function Navbar() {
 
                 <nav
                     className={`navbar-links ${menuOpen ? "open" : ""}`}
+                    aria-label="Navegación principal"
                 >
 
                     <Link
                         to="/"
+                        className={isActive("inicio") ? "active" : ""}
+                        aria-current={isActive("inicio") ? "page" : undefined}
                         onClick={closeMenu}
                     >
                         Inicio
@@ -128,6 +177,8 @@ function Navbar() {
 
                     <Link
                         to="/productos"
+                        className={isActive("productos") ? "active" : ""}
+                        aria-current={isActive("productos") ? "page" : undefined}
                         onClick={closeMenu}
                     >
                         Productos
@@ -136,6 +187,8 @@ function Navbar() {
 
                     <Link
                         to="/productos?categoria=mates"
+                        className={isActive("mates") ? "active" : ""}
+                        aria-current={isActive("mates") ? "page" : undefined}
                         onClick={closeMenu}
                     >
                         Mates
@@ -144,6 +197,8 @@ function Navbar() {
 
                     <Link
                         to="/productos?categoria=termos"
+                        className={isActive("termos") ? "active" : ""}
+                        aria-current={isActive("termos") ? "page" : undefined}
                         onClick={closeMenu}
                     >
                         Termos
@@ -152,6 +207,8 @@ function Navbar() {
 
                     <Link
                         to="/productos?categoria=accesorios"
+                        className={isActive("accesorios") ? "active" : ""}
+                        aria-current={isActive("accesorios") ? "page" : undefined}
                         onClick={closeMenu}
                     >
                         Accesorios
@@ -160,6 +217,8 @@ function Navbar() {
 
                     <Link
                         to="/productos?oferta=true"
+                        className={isActive("ofertas") ? "active" : ""}
+                        aria-current={isActive("ofertas") ? "page" : undefined}
                         onClick={closeMenu}
                     >
                         Ofertas
@@ -177,16 +236,6 @@ function Navbar() {
                         onClick={closeMenu}
                     >
                         <FiSearch />
-                    </Link>
-
-
-                    <Link
-                        to="/admin"
-                        className="navbar-action"
-                        aria-label="Acceso a administración"
-                        onClick={closeMenu}
-                    >
-                        <FiUser />
                     </Link>
 
 

@@ -51,8 +51,9 @@
     transition:color var(--transition-fast);
 }
 
-.navbar-links a:hover{
-    color:var(--color-text);
+.navbar-links a:hover,
+.navbar-links a.active{
+    color:var(--color-primary);
 }
 
 .navbar-links a::after{
@@ -72,7 +73,8 @@
     transition:width var(--transition-fast);
 }
 
-.navbar-links a:hover::after{
+.navbar-links a:hover::after,
+.navbar-links a.active::after{
     width:100%;
 }
 
