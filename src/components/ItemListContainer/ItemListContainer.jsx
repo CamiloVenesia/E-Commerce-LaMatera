@@ -64,24 +64,11 @@ const ItemListContainer = () => {
         return [...filtrados].sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
     }, [productos, categoria, oferta, busqueda, orden, soloOfertas]);
 
-    const heroImage = useMemo(() => {
-
-        const productoHero = productos.find((producto) => (
-            (!categoria || producto.categoria === categoria) &&
-            (!oferta || producto.oferta === true) &&
-            producto.img
-        ));
-
-        return productoHero?.img || productos.find((producto) => producto.img)?.img || null;
-
-    }, [productos, categoria, oferta]);
-
     return (
         <main className="products-container">
-
             <CategoryHeader
                 categoria={categoria}
-                image={heroImage}
+                oferta={oferta === "true"}
             />
 
             <ProductFilters

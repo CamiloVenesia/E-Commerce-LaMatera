@@ -2,153 +2,73 @@
     width:100%;
     max-width:1400px;
     margin:0 auto;
-    padding:40px 40px 120px;
+    padding:0 40px 120px;
 }
-
-
-/* GRID */
 
 .products-grid{
-
     display:grid;
-
     grid-template-columns:repeat(4,1fr);
-
     column-gap:35px;
-
     row-gap:70px;
-
 }
-
-
-
-/* CONTADOR */
 
 .products-count{
-
     margin:40px 0 30px;
-
     color:#77736c;
-
     font-size:.95rem;
-
 }
-
-
-
-/* ESTADO VACIO */
 
 .products-empty{
-
     min-height:350px;
-
     display:flex;
-
     flex-direction:column;
-
     justify-content:center;
-
     align-items:center;
-
     text-align:center;
-
     background:#f6f3ed;
-
     border-radius:24px;
-
     padding:50px;
-
 }
-
-
 
 .products-empty h2{
-
     font-family:var(--font-display);
-
     font-size:2.5rem;
-
     margin-bottom:15px;
-
 }
-
-
 
 .products-empty p{
-
     color:#777;
-
 }
-
-
-
-/* ERROR */
 
 .error-message{
-
     background:#f8e7e3;
-
     color:#9d4d43;
-
     padding:18px 25px;
-
     border-radius:14px;
-
     margin-bottom:30px;
-
 }
-
-
-
-/* TABLET */
-
 
 @media(max-width:1200px){
-
     .products-grid{
-
         grid-template-columns:repeat(3,1fr);
-
         column-gap:30px;
-
     }
-
 }
-
-
-
-/* MOBILE */
-
 
 @media(max-width:850px){
-
     .products-container{
-
-        padding:30px 20px 80px;
-
+        padding:0 20px 80px;
     }
-
 
     .products-grid{
-
         grid-template-columns:repeat(2,1fr);
-
         column-gap:20px;
-
         row-gap:50px;
-
     }
-
 }
 
-
-
 @media(max-width:550px){
-
     .products-grid{
-
         grid-template-columns:1fr;
-
     }
-
 }
