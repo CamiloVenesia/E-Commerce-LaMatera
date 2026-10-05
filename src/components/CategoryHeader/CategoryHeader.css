@@ -294,4 +294,30 @@
                 rgba(248,247,244,.08) 100%
             );
     }
+
+    /*
+     * SOLO MOBILE
+     * Cada imagen necesita una posición horizontal diferente
+     * porque las imágenes originales son panorámicas.
+     */
+
+    .category-hero-image img{
+        object-position:70% center;
+    }
+
+    .category-hero-image img[alt="Mates"]{
+        object-position:65% center;
+    }
+
+    .category-hero-image img[alt="Termos"]{
+        object-position:70% center;
+    }
+
+    .category-hero-image img[alt="Accesorios"]{
+        object-position:70% center;
+    }
+
+    .category-hero-image img[alt="Todos los productos"]{
+        object-position:70% center;
+    }
 }

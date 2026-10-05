@@ -312,9 +312,21 @@
         line-height:1.6;
     }
 
+    /*
+     * MOBILE:
+     * Los botones se separan del texto y se colocan
+     * en la zona media/inferior de la imagen.
+     */
     .hero-actions{
+        position:absolute;
+
+        top:58%;
+
+        left:0;
+
         width:100%;
 
+        display:flex;
         flex-direction:column;
         align-items:stretch;
 

@@ -23,7 +23,6 @@ import Notification from "../Notification/Notification";
 
 import "./ItemDetail.css";
 
-
 const money = (value) =>
     new Intl.NumberFormat("es-AR", {
         style: "currency",
@@ -31,6 +30,71 @@ const money = (value) =>
         minimumFractionDigits: 2,
     }).format(value);
 
+const getOptimizedImageUrl = (url, width) => {
+    if (typeof url !== "string" || !url.trim()) {
+        return url;
+    }
+
+    try {
+        const parsedUrl = new URL(url);
+
+        if (!parsedUrl.hostname.includes("cloudinary.com")) {
+            return url;
+        }
+
+        const uploadMarker = "/image/upload/";
+        const uploadIndex = parsedUrl.pathname.indexOf(uploadMarker);
+
+        if (uploadIndex === -1) {
+            return url;
+        }
+
+        const pathBeforeUpload =
+            parsedUrl.pathname.slice(0, uploadIndex + uploadMarker.length);
+
+        const pathAfterUpload =
+            parsedUrl.pathname.slice(uploadIndex + uploadMarker.length);
+
+        const segments = pathAfterUpload.split("/");
+        const firstSegment = segments[0];
+
+        const isTransformationSegment =
+            firstSegment &&
+            !firstSegment.startsWith("v") &&
+            firstSegment.includes("_");
+
+        const optimizedTransformations = [
+            "f_auto",
+            "q_auto",
+            `w_${width}`,
+        ];
+
+        if (isTransformationSegment) {
+            const existingTransformations = firstSegment
+                .split(",")
+                .filter(
+                    (transformation) =>
+                        !transformation.startsWith("w_") &&
+                        !transformation.startsWith("q_") &&
+                        !transformation.startsWith("f_")
+                );
+
+            segments[0] = [
+                ...existingTransformations,
+                ...optimizedTransformations,
+            ].join(",");
+        } else {
+            segments.unshift(optimizedTransformations.join(","));
+        }
+
+        parsedUrl.pathname =
+            pathBeforeUpload + segments.join("/");
+
+        return parsedUrl.toString();
+    } catch {
+        return url;
+    }
+};
 
 function ItemDetail() {
     const { id } = useParams();
@@ -54,7 +118,6 @@ function ItemDetail() {
 
     const [showNotification, setShowNotification] = useState(false);
 
-
     useEffect(() => {
         let cancelled = false;
 
@@ -70,7 +133,6 @@ function ItemDetail() {
         setQuantity(1);
         setAdded(false);
         setShowNotification(false);
-
 
         async function fetchProduct() {
             try {
@@ -108,15 +170,12 @@ function ItemDetail() {
             }
         }
 
-
         fetchProduct();
-
 
         return () => {
             cancelled = true;
         };
     }, [id]);
-
 
     if (result.loading || result.id !== id) {
         return (
@@ -129,7 +188,6 @@ function ItemDetail() {
             </div>
         );
     }
-
 
     if (result.error || !result.product) {
         return (
@@ -144,7 +202,6 @@ function ItemDetail() {
             </div>
         );
     }
-
 
     const producto = result.product;
 
@@ -189,7 +246,6 @@ function ItemDetail() {
         available
     );
 
-
     /*
      * GALERÍA DE IMÁGENES
      *
@@ -198,7 +254,7 @@ function ItemDetail() {
      * images: [
      *   {
      *     publicId: "...",
-     *     url: "https://..."
+     *     url: "https\://..."
      *   },
      *   ...
      * ]
@@ -206,11 +262,10 @@ function ItemDetail() {
      * También mantenemos compatibilidad con
      * productos antiguos que puedan tener:
      *
-     * imagenes: ["https://...", "..."]
+     * imagenes: ["https\://...", "..."]
      *
      * o incluso objetos con url.
      */
-
 
     const firestoreImages = Array.isArray(producto.images)
         ? producto.images
@@ -231,7 +286,6 @@ function ItemDetail() {
             .filter(Boolean)
         : [];
 
-
     const legacyImages = Array.isArray(producto.imagenes)
         ? producto.imagenes
             .map((image) => {
@@ -251,7 +305,6 @@ function ItemDetail() {
             .filter(Boolean)
         : [];
 
-
     /*
      * La imagen principal antigua está en producto.img.
      *
@@ -270,16 +323,13 @@ function ItemDetail() {
             src.trim()
     );
 
-
     const uniqueImages = [
         ...new Set(images),
     ];
 
-
     const currentImage =
         uniqueImages[activeImage] ||
         uniqueImages[0];
-
 
     const specs = [
         ["Material", producto.material],
@@ -290,7 +340,6 @@ function ItemDetail() {
             typeof value === "string" ||
             typeof value === "number"
     );
-
 
     function handleAdd() {
         if (
@@ -316,10 +365,8 @@ function ItemDetail() {
         setQuantity(1);
     }
 
-
     return (
         <article className="lm-detail">
-
             <nav
                 className="lm-detail-breadcrumb"
                 aria-label="Ubicación"
@@ -361,20 +408,16 @@ function ItemDetail() {
                 </span>
             </nav>
 
-
             <div className="lm-detail-grid">
-
                 <section
                     className="lm-detail-gallery"
                     aria-label="Imágenes del producto"
                 >
-
                     {uniqueImages.length > 0 && (
                         <div
                             className="lm-detail-thumbnails"
                             aria-label="Seleccionar imagen"
                         >
-
                             {uniqueImages.map(
                                 (src, index) => (
                                     <button
@@ -399,7 +442,6 @@ function ItemDetail() {
                                             )
                                         }
                                     >
-
                                         {failedImages.includes(
                                             src
                                         ) ? (
@@ -409,9 +451,13 @@ function ItemDetail() {
                                             </span>
                                         ) : (
                                             <img
-                                                src={src}
+                                                src={getOptimizedImageUrl(
+                                                    src,
+                                                    240
+                                                )}
                                                 alt=""
                                                 loading="lazy"
+                                                decoding="async"
                                                 onError={() =>
                                                     setFailedImages(
                                                         (prev) =>
@@ -427,27 +473,29 @@ function ItemDetail() {
                                                 }
                                             />
                                         )}
-
                                     </button>
                                 )
                             )}
-
                         </div>
                     )}
 
-
                     <div className="lm-detail-photo">
-
                         {currentImage &&
                         !failedImages.includes(
                             currentImage
                         ) ? (
                             <img
                                 className="lm-detail-main-image"
-                                src={currentImage}
+                                src={getOptimizedImageUrl(
+                                    currentImage,
+                                    1200
+                                )}
                                 alt={`${producto.nombre} — imagen ${
                                     activeImage + 1
                                 }`}
+                                loading="eager"
+                                fetchPriority="high"
+                                decoding="async"
                                 onError={() =>
                                     setFailedImages(
                                         (prev) =>
@@ -465,12 +513,12 @@ function ItemDetail() {
                         ) : (
                             <div className="lm-detail-fallback">
                                 La Matera
+
                                 <span>
                                     Imagen no disponible
                                 </span>
                             </div>
                         )}
-
 
                         {discount && (
                             <span className="lm-detail-offer">
@@ -478,36 +526,27 @@ function ItemDetail() {
                             </span>
                         )}
 
-
                         {uniqueImages.length > 1 && (
                             <span className="lm-detail-image-count">
                                 {activeImage + 1} /{" "}
                                 {uniqueImages.length}
                             </span>
                         )}
-
                     </div>
-
                 </section>
 
-
                 <div className="lm-detail-info">
-
                     <p className="lm-detail-category">
                         {producto.categoria ||
                             "La Matera"}
                     </p>
 
-
                     <h1>
                         {producto.nombre}
                     </h1>
 
-
                     <div className="lm-detail-pricing">
-
                         <div className="lm-detail-price-row">
-
                             {discount && (
                                 <del>
                                     {money(oldPrice)}
@@ -525,13 +564,10 @@ function ItemDetail() {
                                     {percentage}% OFF
                                 </span>
                             )}
-
                         </div>
-
 
                         {validPrice && (
                             <p className="lm-detail-installments">
-
                                 <FiCreditCard
                                     aria-hidden="true"
                                 />
@@ -542,12 +578,9 @@ function ItemDetail() {
                                         {money(price / 3)}
                                     </strong>
                                 </span>
-
                             </p>
                         )}
-
                     </div>
-
 
                     <p
                         className={`lm-detail-stock ${
@@ -565,23 +598,19 @@ function ItemDetail() {
                                 : "En stock"}
                     </p>
 
-
                     {producto.descripcion && (
                         <p className="lm-detail-intro">
                             {producto.descripcion}
                         </p>
                     )}
 
-
                     <div className="lm-detail-purchase">
-
                         {available > 0 && (
                             <div
                                 className="lm-detail-quantity"
                                 role="group"
                                 aria-label="Cantidad"
                             >
-
                                 <button
                                     type="button"
                                     aria-label="Disminuir cantidad"
@@ -597,14 +626,12 @@ function ItemDetail() {
                                     <FiMinus />
                                 </button>
 
-
                                 <output
                                     aria-live="polite"
                                     aria-label="Cantidad seleccionada"
                                 >
                                     {selectedQuantity}
                                 </output>
-
 
                                 <button
                                     type="button"
@@ -621,10 +648,8 @@ function ItemDetail() {
                                 >
                                     <FiPlus />
                                 </button>
-
                             </div>
                         )}
-
 
                         <button
                             type="button"
@@ -645,9 +670,7 @@ function ItemDetail() {
                                     ? "Stock disponible en tu carrito"
                                     : "Agregar al carrito"}
                         </button>
-
                     </div>
-
 
                     {inCart > 0 && (
                         <p className="lm-detail-cart-note">
@@ -658,7 +681,6 @@ function ItemDetail() {
                             en tu carrito.
                         </p>
                     )}
-
 
                     {added && (
                         <p
@@ -677,11 +699,8 @@ function ItemDetail() {
                         </p>
                     )}
 
-
                     <div className="lm-detail-accordions">
-
                         <details open>
-
                             <summary>
                                 Información del producto
 
@@ -691,7 +710,6 @@ function ItemDetail() {
                             </summary>
 
                             <div className="lm-detail-panel">
-
                                 {producto.descripcion ? (
                                     <p>
                                         {producto.descripcion}
@@ -699,16 +717,15 @@ function ItemDetail() {
                                 ) : (
                                     <p>
                                         {producto.nombre}
+
                                         {producto.categoria
                                             ? ` · ${producto.categoria}`
                                             : ""}
                                     </p>
                                 )}
 
-
                                 {specs.length > 0 && (
                                     <dl>
-
                                         {specs.map(
                                             ([
                                                 label,
@@ -727,18 +744,13 @@ function ItemDetail() {
                                                 </div>
                                             )
                                         )}
-
                                     </dl>
                                 )}
-
                             </div>
-
                         </details>
-
 
                         {validPrice && (
                             <details>
-
                                 <summary>
                                     Cuotas sin interés
 
@@ -748,7 +760,6 @@ function ItemDetail() {
                                 </summary>
 
                                 <div className="lm-detail-panel">
-
                                     <p>
                                         3 cuotas sin
                                         interés de{" "}
@@ -759,18 +770,14 @@ function ItemDetail() {
                                         del producto:{" "}
                                         {money(price)}.
                                     </p>
-
                                 </div>
-
                             </details>
                         )}
-
 
                         {typeof producto.envio ===
                             "string" &&
                             producto.envio && (
                                 <details>
-
                                     <summary>
                                         Información de envío
 
@@ -780,24 +787,19 @@ function ItemDetail() {
                                     </summary>
 
                                     <div className="lm-detail-panel">
-
                                         <p>
                                             {
                                                 producto.envio
                                             }
                                         </p>
-
                                     </div>
-
                                 </details>
                             )}
-
 
                         {typeof producto.cuidados ===
                             "string" &&
                             producto.cuidados && (
                                 <details>
-
                                     <summary>
                                         Cuidados
 
@@ -807,20 +809,15 @@ function ItemDetail() {
                                     </summary>
 
                                     <div className="lm-detail-panel">
-
                                         <p>
                                             {
                                                 producto.cuidados
                                             }
                                         </p>
-
                                     </div>
-
                                 </details>
                             )}
-
                     </div>
-
 
                     <Link
                         className="lm-detail-back"
@@ -828,11 +825,8 @@ function ItemDetail() {
                     >
                         ← Seguir explorando
                     </Link>
-
                 </div>
-
             </div>
-
 
             {showNotification && (
                 <Notification
@@ -842,10 +836,8 @@ function ItemDetail() {
                     }
                 />
             )}
-
         </article>
     );
 }
-
 
 export default ItemDetail;

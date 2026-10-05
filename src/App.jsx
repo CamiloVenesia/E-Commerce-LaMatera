@@ -36,15 +36,14 @@ function App() {
 
             <CartProvider>
                 <div className="app">
-                    <a href="#contenido" className="skip-link">
-                        Saltar al contenido
-                    </a>
-
                     <Navbar />
 
-                    <main id="contenido" className="main-content" tabIndex={-1}>
+                    <main id="contenido" className="main-content">
                         <Routes>
-                            <Route path="/" element={<Home />} />
+                            <Route
+                                path="/"
+                                element={<Home />}
+                            />
 
                             <Route
                                 path="/productos"
@@ -66,13 +65,25 @@ function App() {
                                 element={<ItemDetail />}
                             />
 
-                            <Route path="/cart" element={<Cart />} />
+                            <Route
+                                path="/cart"
+                                element={<Cart />}
+                            />
 
-                            <Route path="/checkout" element={<Checkout />} />
+                            <Route
+                                path="/checkout"
+                                element={<Checkout />}
+                            />
 
-                            <Route path="/admin" element={<Admin />} />
+                            <Route
+                                path="/admin"
+                                element={<Admin />}
+                            />
 
-                            <Route path="*" element={<NotFound />} />
+                            <Route
+                                path="*"
+                                element={<NotFound />}
+                            />
                         </Routes>
                     </main>
 

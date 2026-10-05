@@ -23,18 +23,30 @@ const ProductCard = ({
     const precioActual = Number(precio) || 0;
     const precioOriginal = Number(precioAnterior) || 0;
     const hasStock = Number(stock) > 0;
-    const tieneDescuento = oferta && precioOriginal > precioActual;
-    const porcentajeOferta = tieneDescuento ? Math.round(((precioOriginal - precioActual) / precioOriginal) * 100) : 0;
+
+    const tieneDescuento =
+        oferta && precioOriginal > precioActual;
+
+    const porcentajeOferta = tieneDescuento
+        ? Math.round(
+            ((precioOriginal - precioActual) / precioOriginal) * 100
+        )
+        : 0;
+
     const valorCuota = precioActual / 3;
 
-    const segundaImagen = Array.isArray(images) && images.length > 1
-        ? (typeof images[1] === "string" ? images[1] : images[1]?.url)
-        : null;
+    const segundaImagen =
+        Array.isArray(images) && images.length > 1
+            ? typeof images[1] === "string"
+                ? images[1]
+                : images[1]?.url
+            : null;
 
-    const formatPrice = (value, decimals = 0) => Number(value).toLocaleString("es-AR", {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals
-    });
+    const formatPrice = (value, decimals = 0) =>
+        Number(value).toLocaleString("es-AR", {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals
+        });
 
     const handleCardClick = () => {
         navigate(`/producto/${id}`);
@@ -49,8 +61,20 @@ const ProductCard = ({
 
     const handleAddToCart = (e) => {
         e.stopPropagation();
+
         if (!hasStock) return;
-        addItem({ id, nombre, precio: precioActual, img, stock }, 1);
+
+        addItem(
+            {
+                id,
+                nombre,
+                precio: precioActual,
+                img,
+                stock
+            },
+            1
+        );
+
         setShowNotification(true);
     };
 
@@ -62,7 +86,9 @@ const ProductCard = ({
     return (
         <>
             <article
-                className={`product-card ${!hasStock ? "product-card-disabled" : ""} ${segundaImagen ? "has-second-image" : ""}`}
+                className={`product-card ${
+                    !hasStock ? "product-card-disabled" : ""
+                } ${segundaImagen ? "has-second-image" : ""}`}
                 onClick={handleCardClick}
                 onKeyDown={handleKeyDown}
                 role="link"
@@ -74,6 +100,7 @@ const ProductCard = ({
                         alt={nombre}
                         className="product-card-img product-card-img-primary"
                         loading="lazy"
+                        decoding="async"
                     />
 
                     {segundaImagen && (
@@ -82,6 +109,7 @@ const ProductCard = ({
                             alt=""
                             className="product-card-img product-card-img-secondary"
                             loading="lazy"
+                            decoding="async"
                             aria-hidden="true"
                         />
                     )}
@@ -93,15 +121,13 @@ const ProductCard = ({
                                     {porcentajeOferta}% OFF
                                 </span>
                             )}
-
-                            <div className="product-swatches" aria-hidden="true">
-                                <span className="product-swatch product-swatch-dark"></span>
-                                <span className="product-swatch product-swatch-green"></span>
-                                <span className="product-swatch product-swatch-light"></span>
-                            </div>
                         </div>
 
-                        <span className={`product-stock-status ${hasStock ? "available" : "unavailable"}`}>
+                        <span
+                            className={`product-stock-status ${
+                                hasStock ? "available" : "unavailable"
+                            }`}
+                        >
                             <span className="stock-dot"></span>
                             {hasStock ? "En stock" : "Sin stock"}
                         </span>
@@ -109,20 +135,29 @@ const ProductCard = ({
                 </div>
 
                 <div className="product-card-content">
-                    <span className="product-category">{categoria}</span>
+                    <span className="product-category">
+                        {categoria}
+                    </span>
 
-                    <h3 className="product-title">{nombre}</h3>
+                    <h3 className="product-title">
+                        {nombre}
+                    </h3>
 
                     <div className="product-price-row">
-                        <span className="product-price">${formatPrice(precioActual)}</span>
+                        <span className="product-price">
+                            ${formatPrice(precioActual)}
+                        </span>
 
                         {tieneDescuento && (
-                            <span className="product-old-price">${formatPrice(precioOriginal)}</span>
+                            <span className="product-old-price">
+                                ${formatPrice(precioOriginal)}
+                            </span>
                         )}
                     </div>
 
                     <p className="product-installments">
-                        3 cuotas sin interés de ${formatPrice(valorCuota, 2)}
+                        3 cuotas sin interés de $
+                        {formatPrice(valorCuota, 2)}
                     </p>
 
                     <div className="product-card-actions">
@@ -133,7 +168,11 @@ const ProductCard = ({
                             disabled={!hasStock}
                         >
                             <FiShoppingCart />
-                            <span>{hasStock ? "Agregar al carrito" : "Sin stock"}</span>
+                            <span>
+                                {hasStock
+                                    ? "Agregar al carrito"
+                                    : "Sin stock"}
+                            </span>
                         </button>
 
                         <button
