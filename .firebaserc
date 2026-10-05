@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "e-commerce-pf-lamatera"
-  }
+  },
+  "targets": {
+    "e-commerce-pf-lamatera": {
+      "hosting": {
+        "lamatera": [
+          "lamatera-arg"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
